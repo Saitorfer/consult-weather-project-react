@@ -1,0 +1,24 @@
+.title {
+  text-align: center;
+  font-size: 3rem;
+  margin-top: 5rem;
+}
+
+.container {
+  width: 95%;
+  max-width: 100rem;
+  /*center horizontaly*/
+  margin: 0 auto;
+}
+
+/*Apply if the min is superior to 768px*/
+@media (min-width: 768px){
+    .container{
+        display:grid;
+        /*2 columns per fraccion*/
+        grid-template-columns: repeat(2,1fr);
+        align-items: center;
+        gap:4rem;
+        margin-top: 5rem;
+    }
+}
