@@ -5,7 +5,9 @@ import type { SearchType } from "../../types";
 import { ChangeEvent } from "react";
 import Alert from "../Alert/Alert"
 type FormProps={
-  fetchWeather : () => void
+  //we get the return tab because in the error he ask about it
+  //this is the async asked in useWeather.ts (const fetchWeather = async(search: SearchType ))
+  fetchWeather : (search: SearchType) => Promise<void>
 }
 export default function Form({fetchWeather} : FormProps) {
 
@@ -37,7 +39,7 @@ export default function Form({fetchWeather} : FormProps) {
       return;
     }
 
-    fetchWeather();
+    fetchWeather(search);
   }
 
   return (
