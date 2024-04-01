@@ -26,7 +26,7 @@ const Weather = z.object({
     temp_max: z.number(),
     temp_min: z.number(),
   }),
-});
+})
 
 export type Weather = z.infer<typeof Weather>;
 
@@ -40,11 +40,14 @@ export default function () {
         temp_min: 0
     }
   })
+  const [loading, setLoading] = useState(false);
   //async to api because we block code since we get result
   const fetchWeather = async (search: SearchType) => {
+    //this is to hide the key (vite)
+    const apiKey = import.meta.env.VITE_API_KEY;
+    //loading
+    setLoading(true);
     try {
-      //this is to hide the key (vite)
-      const apiKey = import.meta.env.VITE_API_KEY;
 
       const geoUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${search.city},
             ${search.country} &appid=${apiKey}`;
@@ -78,6 +81,9 @@ export default function () {
       console.log(result);
     } catch (error) {
       console.log(error);
+    }finally{
+      //the finally is execute no matter if there is an error or not
+      setLoading(false);
     }
   };
 
@@ -86,6 +92,7 @@ export default function () {
 
   return {
     weather,
+    loading,
     fetchWeather,
     hasWeatherData
   };
