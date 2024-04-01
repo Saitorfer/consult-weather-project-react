@@ -1,7 +1,7 @@
 import axios from "axios";
 import { z } from "zod";
 import type { SearchType } from "../types";
-import {useMemo, useState} from "react"
+import { useMemo, useState } from "react";
 
 //Type Guards O ASSERTION
 //we use unknow because we dont know what we receive but
@@ -26,35 +26,41 @@ const Weather = z.object({
     temp_max: z.number(),
     temp_min: z.number(),
   }),
-})
+});
 
 export type Weather = z.infer<typeof Weather>;
-
+const initialState = {
+  name: "",
+  main: {
+    temp: 0,
+    temp_max: 0,
+    temp_min: 0,
+  },
+};
 export default function () {
-
-  const [weather,setWeather] = useState<Weather>({
-    name: '',
-    main :{
-        temp: 0,
-        temp_max: 0,
-        temp_min: 0
-    }
-  })
+  const [weather, setWeather] = useState<Weather>(initialState);
   const [loading, setLoading] = useState(false);
+  const [notFound, setNotFound] = useState(false);
   //async to api because we block code since we get result
   const fetchWeather = async (search: SearchType) => {
     //this is to hide the key (vite)
     const apiKey = import.meta.env.VITE_API_KEY;
     //loading
     setLoading(true);
+    setWeather(initialState);
     try {
-
       const geoUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${search.city},
             ${search.country} &appid=${apiKey}`;
 
       //{data} to get the data part of the response (destruct)
       //axios is a library to call apis
       const { data } = await axios(geoUrl);
+
+      //Check if the city exist (the json is empty if he doesnt found anything)
+      if (!data[0]) {
+        setNotFound(true);
+        return;
+      }
       const lat = data[0].lat;
       const lon = data[0].lon;
       console.log(data);
@@ -78,22 +84,22 @@ export default function () {
       if (result.success) {
         setWeather(result.data);
       }
-      console.log(result);
     } catch (error) {
       console.log(error);
-    }finally{
+    } finally {
       //the finally is execute no matter if there is an error or not
       setLoading(false);
     }
   };
 
   //verify if weather has something
-  const hasWeatherData = useMemo( ()=> weather.name, [weather])
+  const hasWeatherData = useMemo(() => weather.name, [weather]);
 
   return {
     weather,
     loading,
+    notFound,
     fetchWeather,
-    hasWeatherData
+    hasWeatherData,
   };
 }

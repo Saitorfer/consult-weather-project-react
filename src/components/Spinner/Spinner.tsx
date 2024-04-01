@@ -1,7 +1,7 @@
 import React from "react";
 //module its very optimize, so we dont see the spinner
 //its better to do it without modules
-import  "./Spinner.css";
+import "./Spinner.css";
 
 export default function Spinner() {
   return (
